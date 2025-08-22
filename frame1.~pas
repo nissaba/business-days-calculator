@@ -1,0 +1,190 @@
+unit frame1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, Grids, Calendar, ComCtrls;
+
+type
+  TForm1 = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel4: TPanel;
+    Panel1: TPanel;
+    Calendar2: TCalendar;
+    pnl2: TPanel;
+    monthBox2: TComboBox;
+    Panel2: TPanel;
+    Calendar1: TCalendar;
+    pnl1: TPanel;
+    monthBox1: TComboBox;
+    yearbox1: TEdit;
+    UpDown1: TUpDown;
+    UpDown2: TUpDown;
+    yearbox2: TEdit;
+    month2: TPanel;
+	 month1: TPanel;
+	 procedure FormShow(Sender: TObject);
+	 procedure Button2Click(Sender: TObject);
+	 procedure Button1Click(Sender: TObject);
+    procedure monthBox1Change(Sender: TObject);
+    procedure Calendar1Change(Sender: TObject);
+    procedure Calendar2Change(Sender: TObject);
+    procedure monthBox2Change(Sender: TObject);
+    procedure yearbox1Change(Sender: TObject);
+	 procedure yearbox2Change(Sender: TObject);
+	 function numberOfDays(date1: TDateTime; date2: TDateTime): TDateTime;
+	 procedure updateStatus;
+  private
+	 { Private declarations }
+	 {function numberOfDays(date1: TDateTime; date2: TDateTime): TDateTime;}
+  public
+	 { Public declarations }
+  end;
+type
+	arrayString = array[1..12] of String;
+
+var
+  Form1: TForm1;
+  months: arrayString;
+
+implementation
+
+{$R *.DFM}
+
+function TForm1.numberOfDays(date1: TDateTime; date2: TDateTime): TDateTime;
+var
+	t1, t2, t3: TDateTime;
+begin
+	t1 := date1;
+	t2 := date2;
+	if ( t1 < t2 ) then
+	begin
+		t3 := t1;
+		t1 := t2;
+		t2:= t3;
+	end;
+	numberOfDays := t1 -  t2;
+end;
+
+procedure TForm1.updateStatus;
+var
+	t1, t2, t3: TDateTime;
+	nbrd: string;
+begin
+	t1 := EncodeDate(form1.calendar1.year, form1.calendar1.month, form1.calendar1.day);
+	t2 := EncodeDate(form1.calendar2.year, form1.calendar2.month, form1.calendar2.day);
+	t3 := numberOfDays(t1, t2);
+	str(trunc(t3), nbrd);
+	form1.StatusBar1.Panels[0].text := 'Numbers of days: ' + nbrd;
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+var
+	i: integer;
+	y: string;
+        Present: TDateTime;
+        Year, Month, Day: word;
+
+begin
+	calendar1.month := calendar2.month -1;
+	months[1] := 'Janvier';
+	months[2] := 'Fevrier';
+	months[3] := 'Marce';
+	months[4] := 'Avril';
+	months[5] := 'May';
+	months[6] := 'Juin';
+	months[7] := 'Juillet';
+	months[8] := 'Aout';
+	months[9] := 'Septembre';
+	months[10] := 'Octobre';
+	months[11] := 'Novambre';
+	months[12] := 'Decenbre';
+	month1.caption := months[calendar1.month];
+	month2.caption := months[calendar2.month];
+	monthbox1.itemindex := calendar1.month -1;
+	monthbox2.itemindex := calendar2.month -1;
+	str(calendar1.year, y);
+	month1.caption := months[calendar1.month] + ' '+y;
+	str(calendar2.year, y);
+	month2.caption := months[calendar2.month] + ' '+y;
+        Present:= Now;
+        DecodeDate(Present, Year, Month, Day);
+        yearbox2.Text := IntToStr(Year);
+        if month = 1 then
+                yearbox1.Text := IntToStr(Year -1)
+        else
+                yearbox1.Text := IntToStr(Year);
+
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+if (calendar1.month > 1) then
+begin
+Calendar1.month := Calendar1.month -1;
+calendar2.month := calendar2.month -1;
+end;
+month1.caption := months[calendar1.month];
+month2.caption := months[calendar2.month];
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+if (calendar2.month < 12) then
+begin
+Calendar1.month := Calendar1.month +1;
+calendar2.month := calendar2.month +1;
+end;
+month1.caption := months[calendar1.month];
+month2.caption := months[calendar2.month];
+end;
+
+procedure TForm1.monthBox1Change(Sender: TObject);
+begin
+calendar1.month := monthbox1.itemindex +1;
+end;
+
+procedure TForm1.Calendar1Change(Sender: TObject);
+var
+	y: string;
+	i: integer;
+begin
+str(calendar1.year, y);
+month1.caption := months[calendar1.month] + ' '+y;
+updateStatus();
+end;
+
+procedure TForm1.Calendar2Change(Sender: TObject);
+var
+	y: string;
+begin
+str(calendar2.year, y);
+month2.caption := months[calendar2.month] + ' '+y;
+updateStatus();
+end;
+
+procedure TForm1.monthBox2Change(Sender: TObject);
+begin
+calendar2.month := monthbox2.itemindex +1;
+end;
+
+procedure TForm1.yearbox1Change(Sender: TObject);
+var
+	i: integer;
+	y: real;
+begin
+val(yearbox1.text,y,i);
+calendar1.year := trunc(y);
+end;
+
+procedure TForm1.yearbox2Change(Sender: TObject);
+var
+	i: integer;
+	y: real;
+begin
+val(yearbox2.text,y,i);
+calendar2.year := trunc(y);
+end;
+
+end.

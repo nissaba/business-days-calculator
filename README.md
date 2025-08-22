@@ -1,2 +1,3 @@
 # business-days-calculator
-Programme qui permet de choisir 2 date et avoir le nombre de jours et de jours ouvrable 
+Programme permettant de sélectionner deux dates et de calculer le nombre total de jours ainsi que le nombre de jours ouvrables entre celles-ci. Développé sous Delphi 6.0, durant ma période d’emploi chez Primus.
+
